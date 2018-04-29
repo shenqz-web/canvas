@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>炫彩小球</title>
+		<style type="text/css">
+			body {
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+			}
+			canvas {
+				background: #000;
+			}
+		</style>
+	</head>
+	<body>
+		<canvas id="myCanvas"></canvas>
+		<script>
+			
+			var myCanvas = document.getElementById('myCanvas');
+			var ctx = myCanvas.getContext('2d');
+			
+			myCanvas.width = document.documentElement.clientWidth;
+			myCanvas.height = document.documentElement.clientHeight;
+			
+			var actorArr = [];
+			
+			
+			function Ball(x, y){
+				this.x = x;
+				this.y = y;
+				this.r = 30;
+				this.color = 'rgba(' + parseInt(Math.random()* 256)  + ','+ parseInt(Math.random() * 256) +','+ parseInt(Math.random() * 256) +', 0.6)';
+				//this.color = 'rgba(255,255,255,.7)'
+				this.dx = parseInt(Math.random() *18) - 9;
+				this.dy = parseInt(Math.random() *18) - 9;
+				actorArr.push(this);
+			}
+			
+			Ball.prototype.update = function(){
+				this.x += this.dx;
+				this.y += this.dy;
+				this.r--;
+				if(this.r < 0){
+					this.remove();
+				}
+			}
+			
+			Ball.prototype.render = function(){
+				ctx.beginPath();
+				ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2, true);
+				ctx.closePath();
+				ctx.fillStyle = this.color;
+				ctx.fill();
+			}
+			
+			Ball.prototype.remove = function(){
+				for (var i = 0; i < actorArr.length; i++) {
+					if(actorArr[i] === this){
+						actorArr.splice(i,1)
+					}
+					
+				}
+			}
+			
+			
+			myCanvas.onmousemove = function(event){
+				new Ball(event.clientX, event.clientY);
+			}
+			
+			setInterval(function(){
+				ctx.clearRect(0, 0, myCanvas.width, myCanvas.height)
+				for (var i = 0; i < actorArr.length; i++) {
+					actorArr[i].update();
+					actorArr[i] && actorArr[i].render();
+					
+				}
+			},20)
+		</script>
+	</body>
+</html>
